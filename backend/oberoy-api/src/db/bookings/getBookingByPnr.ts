@@ -12,10 +12,26 @@ import { handleDbError } from '../utils/errorHandler';
 export const getBookingByPnr = async (env: IEnvironment, pnr: string): Promise<IBookingDetails | undefined> => {
 	try {
 		const stmt = env.DB.prepare(`
-      SELECT b.*, g.*, rt.*,
-        b.id as booking_id,
+      SELECT 
+        b.*,
         g.id as guest_id,
-        rt.id as room_type_id
+        g.name as guest_name,
+        g.email as guest_email,
+        g.phone as guest_phone,
+        g.address as guest_address,
+        g.id_proof_type as guest_id_proof_type,
+        g.id_proof_number as guest_id_proof_number,
+        g.date_of_birth as guest_date_of_birth,
+        rt.id as room_type_id,
+        rt.name as room_type_name,
+        rt.hotel_id,
+        rt.description,
+        rt.max_adults,
+        rt.max_children,
+        rt.base_price,
+        rt.main_image_url,
+        rt.is_deleted,
+        b.id as booking_id
       FROM bookings b
       JOIN guests g ON b.guest_id = g.id
       JOIN room_types rt ON b.room_type_id = rt.id
@@ -48,18 +64,18 @@ export const getBookingByPnr = async (env: IEnvironment, pnr: string): Promise<I
 			addons: [] as (IAddon & { quantity: number; total_price: number })[],
 			guest: {
 				id: Number(result.guest_id),
-				name: String(result.name),
-				email: result.email ? String(result.email) : undefined,
-				phone: result.phone ? String(result.phone) : undefined,
-				address: result.address ? String(result.address) : undefined,
-				id_proof_type: result.id_proof_type ? String(result.id_proof_type) : undefined,
-				id_proof_number: result.id_proof_number ? String(result.id_proof_number) : undefined,
-				date_of_birth: result.date_of_birth ? String(result.date_of_birth) : undefined,
+				name: String(result.guest_name),
+				email: result.guest_email ? String(result.guest_email) : undefined,
+				phone: result.guest_phone ? String(result.guest_phone) : undefined,
+				address: result.guest_address ? String(result.guest_address) : undefined,
+				id_proof_type: result.guest_id_proof_type ? String(result.guest_id_proof_type) : undefined,
+				id_proof_number: result.guest_id_proof_number ? String(result.guest_id_proof_number) : undefined,
+				date_of_birth: result.guest_date_of_birth ? String(result.guest_date_of_birth) : undefined,
 			},
 			room_type: {
 				id: Number(result.room_type_id),
 				hotel_id: Number(result.hotel_id),
-				name: String(result.name),
+				name: String(result.room_type_name),
 				description: String(result.description),
 				max_adults: Number(result.max_adults),
 				max_children: Number(result.max_children),

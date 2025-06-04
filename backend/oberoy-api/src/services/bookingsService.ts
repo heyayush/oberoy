@@ -1,7 +1,16 @@
 import { IEnvironment, IApiResponse } from '../types/common';
 import { IBooking, ICreateBooking, IBookingDetails } from '../types/bookings';
 import { createApiResponse, generatePNR } from '../utils';
-import { createGuest, createBooking, addBookingAddons, getBookingByPnr, updateBooking, cancelBooking } from '../db';
+import {
+	createGuest,
+	createBooking,
+	addBookingAddons,
+	getBookingByPnr,
+	updateBooking,
+	cancelBooking,
+	findPnr,
+	findGuestAndUpdate,
+} from '../db';
 
 export const createBookingService = async (
 	env: IEnvironment,
@@ -38,13 +47,29 @@ export const createBookingService = async (
 			return createApiResponse(false, { pnr: '', booking_id: 0 }, 'Check-out date must be after check-in date');
 		}
 
-		// Generate PNR
-		const pnr = generatePNR();
+		// Generate PNR and check if it already exists
+		let pnr = generatePNR();
+		let pnrExists = await findPnr(env, pnr);
 
-		// Check if PNR already exists if yes then generate a new one
+		// Keep generating until a unique PNR is found
+		while (pnrExists) {
+			pnr = generatePNR();
+			pnrExists = await findPnr(env, pnr);
+		}
 
-		// Create guest record
-		const guest = await createGuest(env, bookingData.guest);
+		// Check if guest with the same email or phone already exists
+		// If found, update with any new information provided
+		let guest = await findGuestAndUpdate(env, bookingData.guest);
+
+		// If guest doesn't exist, create a new guest record
+		if (!guest) {
+			guest = await createGuest(env, bookingData.guest);
+
+			// Double check that the guest was created successfully
+			if (!guest || !guest.id) {
+				return createApiResponse(false, { pnr: '', booking_id: 0 }, 'Failed to create guest record');
+			}
+		}
 
 		if (!guest || !guest.id) {
 			return createApiResponse(false, { pnr: '', booking_id: 0 }, 'Failed to create guest record');
