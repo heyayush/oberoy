@@ -2,18 +2,14 @@
   "name": "oberoy-monorepo",
   "private": true,
   "version": "1.0.0",
-  "workspaces": [
-    "frontend",
-    "backend/oberoy-api"
-  ],
   "scripts": {
-    "dev:frontend": "pnpm --filter frontend dev",
-    "dev:backend": "pnpm --filter backend/oberoy-api dev",
+    "dev:frontend": "pnpm --filter \"./frontend\" dev",
+    "dev:backend": "pnpm --filter \"./backend/oberoy-api\" dev",
     "dev": "pnpm run dev:frontend & pnpm run dev:backend",
-    "build:frontend": "pnpm --filter frontend build",
-    "build:backend": "pnpm --filter backend/oberoy-api build || echo 'No build script in backend'",
+    "build:frontend": "pnpm --filter \"./frontend\" build",
+    "build:backend": "pnpm --filter \"./backend/oberoy-api\" build || echo 'No build script in backend'",
     "build": "pnpm run build:frontend && pnpm run build:backend",
-    "lint:frontend": "pnpm --filter frontend lint",
-    "test:backend": "pnpm --filter backend/oberoy-api test"
+    "lint:frontend": "pnpm --filter \"./frontend\" lint",
+    "test:backend": "pnpm --filter \"./backend/oberoy-api\" test"
   }
 }
