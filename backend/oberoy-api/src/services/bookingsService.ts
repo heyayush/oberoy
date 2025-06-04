@@ -28,9 +28,7 @@ export const createBookingService = async (
 			!bookingData.booking?.check_in_date ||
 			!bookingData.booking?.check_out_date ||
 			!bookingData.booking?.adults ||
-			!bookingData.booking?.total_rooms ||
-			!bookingData.booking?.room_price ||
-			!bookingData.booking?.total_amount
+			!bookingData.booking?.total_rooms
 		) {
 			return createApiResponse(false, { pnr: '', booking_id: 0 }, 'Missing required booking information');
 		}
@@ -76,11 +74,15 @@ export const createBookingService = async (
 		}
 
 		// Create booking record
-		const booking = await createBooking(env, {
-			...bookingData.booking,
-			pnr,
-			guest_id: guest.id,
-		});
+		const booking = await createBooking(
+			env,
+			{
+				...bookingData.booking,
+				pnr,
+				guest_id: guest.id,
+			},
+			bookingData.addons // Pass addons to calculate total_amount
+		);
 
 		if (!booking || !booking.id) {
 			return createApiResponse(false, { pnr: '', booking_id: 0 }, 'Failed to create booking');

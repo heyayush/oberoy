@@ -23,7 +23,7 @@ export interface IBooking {
 
 export interface ICreateBooking {
 	guest: IGuest;
-	booking: Omit<IBooking, 'id' | 'pnr' | 'guest_id'>;
+	booking: Omit<IBooking, 'id' | 'pnr' | 'guest_id' | 'room_price' | 'total_amount'>;
 	addons?: {
 		addon_id: number;
 		quantity: number;
