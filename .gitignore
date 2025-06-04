@@ -1,1 +1,10 @@
 .env
+prd.md
+db_schema.sql
+technical-specifications.md
+api-design.md
+api-design-public.md
+api-design-admin.md
+cloudflare-workers-instructions.md
+deployment-guide.md
+react-frontend-instructions.md
