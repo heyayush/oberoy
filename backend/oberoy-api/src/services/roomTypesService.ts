@@ -1,7 +1,7 @@
 import { IEnvironment, IApiResponse } from '../types/common';
 import { IRoomType, IRoomTypeImage } from '../types/roomTypes';
 import { createApiResponse } from '../utils';
-import { getRoomTypes, getRoomTypeById, getRoomTypeImages, checkAvailability, getRoomPricing } from '../db/queries';
+import { getRoomTypes, getRoomTypeById, getRoomTypeImages, checkAvailability, getRoomPricing } from '../db';
 
 export const getRoomTypesService = async (env: IEnvironment, offset: number, limit: number): Promise<IApiResponse<IRoomType[]>> => {
 	try {

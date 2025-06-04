@@ -1,7 +1,7 @@
 import { IEnvironment, IApiResponse } from '../types/common';
 import { IBooking, ICreateBooking, IBookingDetails } from '../types/bookings';
 import { createApiResponse, generatePNR } from '../utils';
-import { createGuest, createBooking, addBookingAddons, getBookingByPnr, updateBooking, cancelBooking } from '../db/queries';
+import { createGuest, createBooking, addBookingAddons, getBookingByPnr, updateBooking, cancelBooking } from '../db';
 
 export const createBookingService = async (
 	env: IEnvironment,
@@ -40,6 +40,8 @@ export const createBookingService = async (
 
 		// Generate PNR
 		const pnr = generatePNR();
+
+		// Check if PNR already exists if yes then generate a new one
 
 		// Create guest record
 		const guest = await createGuest(env, bookingData.guest);
